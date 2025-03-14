@@ -15,11 +15,29 @@
         canvas {
             border: 1px solid black;
         }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
-    <label> Lados: <input type="range" id="sidesSlider" min="3" max="1000" value="3"> <span id="sidesCount">3</span></label>
-    <label> Radio: <input type="range" id="radiusSlider" min="1" max="100" value="100"> <span id="radiusCount">100</span></label>
+    <div class="slider-container">
+        <button onclick="changeValue('sidesSlider', -1)">-</button>
+        <label> Lados: <input type="range" id="sidesSlider" min="3" max="1000" value="3" oninput="update()"> <span id="sidesCount">3</span></label>
+        <button onclick="changeValue('sidesSlider', 1)">+</button>
+    </div>
+    <div class="slider-container">
+        <button onclick="changeValue('radiusSlider', -1)">-</button>
+        <label> Radio: <input type="range" id="radiusSlider" min="1" max="100" value="100" oninput="update()"> <span id="radiusCount">100</span></label>
+        <button onclick="changeValue('radiusSlider', 1)">+</button>
+    </div>
     <canvas id="canvas" width="400" height="400"></canvas>
     <p>Área: <span id="area">0</span></p>
     <p>Perímetro: <span id="perimeter">0</span></p>
@@ -77,12 +95,11 @@
             // Aproximación de PI
             const approxPi = Math.PI;
             
-            // Dibujar el valor de pi en la esquina del canvas
+            // Dibujar texto
             ctx.fillStyle = "black";
             ctx.font = "14px Arial";
             ctx.fillText("¡Una circunferencia es un polígono", canvas.width - 250, 60);
             ctx.fillText("regular con infinitos lados!", canvas.width - 220, 80);
-
             ctx.fillText(`π ≈ ${approxPi.toFixed(6)}`, 10, 20);
             ctx.fillText("Área de una circunferencia = πr²", 10, 40);
 
@@ -99,8 +116,11 @@
             drawPolygon(sides, radius);
         }
 
-        sidesSlider.addEventListener("input", update);
-        radiusSlider.addEventListener("input", update);
+        function changeValue(id, delta) {
+            const slider = document.getElementById(id);
+            slider.value = Math.max(slider.min, Math.min(slider.max, parseInt(slider.value) + delta));
+            update();
+        }
 
         update();
     </script>

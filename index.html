@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculo con Polígono Regular</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <label> Lados: <input type="range" id="sidesSlider" min="3" max="1000" value="3"> <span id="sidesCount">3</span></label>
+    <label> Radio: <input type="range" id="radiusSlider" min="1" max="100" value="100"> <span id="radiusCount">100</span></label>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <p>Área: <span id="area">0</span></p>
+    <p>Perímetro: <span id="perimeter">0</span></p>
+    
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const sidesSlider = document.getElementById("sidesSlider");
+        const radiusSlider = document.getElementById("radiusSlider");
+        const sidesCount = document.getElementById("sidesCount");
+        const radiusCount = document.getElementById("radiusCount");
+        const perimeterDisplay = document.getElementById("perimeter");
+        const areaDisplay = document.getElementById("area");
+
+        function drawPolygon(sides, radius) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Dibujar círculo
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Dibujar polígono
+            ctx.beginPath();
+            let perimeter = 0;
+            let firstX, firstY, prevX, prevY;
+            let sideLength;
+            for (let i = 0; i < sides; i++) {
+                const angle = (i * 2 * Math.PI) / sides;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                    firstX = x;
+                    firstY = y;
+                } else {
+                    ctx.lineTo(x, y);
+                    sideLength = Math.sqrt((x - prevX) ** 2 + (y - prevY) ** 2);
+                    perimeter += sideLength;
+                }
+                prevX = x;
+                prevY = y;
+            }
+            ctx.lineTo(firstX, firstY);
+            sideLength = Math.sqrt((firstX - prevX) ** 2 + (firstY - prevY) ** 2);
+            perimeter += sideLength;
+            ctx.stroke();
+            
+            // Calcular área
+            const apothem = radius * Math.cos(Math.PI / sides);
+            const area = (perimeter * apothem) / 2;
+
+            // Aproximación de PI
+            const approxPi = Math.PI;
+            
+            // Dibujar el valor de pi en la esquina del canvas
+            ctx.fillStyle = "black";
+            ctx.font = "14px Arial";
+            ctx.fillText(`π ≈ ${approxPi.toFixed(6)}`, 10, 20);
+            ctx.fillText("Área de una circunferencia = πr²", 10, 40);
+
+            // Mostrar resultados
+            perimeterDisplay.textContent = perimeter.toFixed(2);
+            areaDisplay.textContent = area.toFixed(2);
+        }
+
+        function update() {
+            const sides = parseInt(sidesSlider.value);
+            const radius = parseInt(radiusSlider.value);
+            sidesCount.textContent = sides;
+            radiusCount.textContent = radius;
+            drawPolygon(sides, radius);
+        }
+
+        sidesSlider.addEventListener("input", update);
+        radiusSlider.addEventListener("input", update);
+
+        update();
+    </script>
+</body>
+</html>

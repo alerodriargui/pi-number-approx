@@ -80,6 +80,9 @@
             // Dibujar el valor de pi en la esquina del canvas
             ctx.fillStyle = "black";
             ctx.font = "14px Arial";
+            ctx.fillText("¡Una circunferencia es un polígono", canvas.width - 250, 60);
+            ctx.fillText("regular con infinitos lados!", canvas.width - 220, 80);
+
             ctx.fillText(`π ≈ ${approxPi.toFixed(6)}`, 10, 20);
             ctx.fillText("Área de una circunferencia = πr²", 10, 40);
 
